@@ -1,0 +1,213 @@
+﻿@model RepoApp.BLL.Models.ProjectViewModelAdd
+
+@{
+    ViewBag.Title = "null";
+
+}
+
+<h2>Create project</h2>
+
+<form novalidate id="projectAddForm">
+
+
+    <hr />
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control projectName" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-sm-6">
+            @Html.LabelFor(m => m.Departments)
+            @Html.DropDownListFor(m => m.Departments, ViewBag.Departments as SelectList, new { @class = "form-control form-control-sm selectpicker selectpicker-border show-tick departmentOption" })
+
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-6">
+            @Html.LabelFor(m => m.Users)
+            @Html.DropDownListFor(m => m.Users, ViewBag.Users as SelectList, new { @class = "form-control form-control-sm selectpicker selectpicker-border show-tick user" })
+        </div>
+        <div class="col-sm-6 form-group">
+            @Html.LabelFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control userName" })
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <hr />
+</form>
+<div class="repoSpace"></div>
+
+<div class="row">
+    <div class="col text-center error_Row">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        <button class="btn btn-success center" type="button" id="addRepo"><span class="glyphicon glyphicon-plus"></span>Add repository</button>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col text-center">
+        <button class="btn btn-primary center" type="button" id="createProject">Create</button>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+
+        $(document).ready(function () {
+            var repoCount = -1;
+
+
+            $("#addRepo").click(function () {
+
+                repoCount++;
+                $('.error_Row').empty();
+                $.ajax(
+                    {
+                        url: "/Project/AddRepository",
+                        type: "POST",
+                        success: function (response) {
+                            $(".repoSpace").append(response);
+                            $('.selectpicker').selectpicker();
+                            $('.url').last().attr('name', 'name' + repoCount);
+                            $('.spanClass').last().attr('id', 'id' + repoCount);
+                        },
+
+                    })
+
+
+
+            })
+
+            $("#createProject").click(function (e) {
+
+                var formDataRepository = new FormData();
+                var selectedIds = [];
+                var insertedUrls = [];
+
+                $(".repository-selectpicker option:selected").each(function (index) {
+                    selectedIds.push($(this).attr("id"));
+
+                })
+
+                $(".url").each(function (index) {
+                    insertedUrls.push($(this).val());
+                })
+
+
+                formDataRepository.append("projectData[]", $(".projectName").val())
+                formDataRepository.append("projectData[]", $(".departmentOption option:selected").val())
+                formDataRepository.append("projectData[]", $(".user option:selected").val())
+                formDataRepository.append("projectData[]", $(".userName").val())
+
+               // formDataRepository.append("projectData[]", loggedUsername)
+
+                var repos = [];
+                var isDistinct = true;
+
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    formDataRepository.append("projectData[]", selectedIds[i] + "^" + insertedUrls[i]);
+                    repos.push(selectedIds[i] + "^" + insertedUrls[i]);
+                }
+
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    for (var j = 0; j < insertedUrls.length; j++) {
+                        if (repos[i] == repos[j] && i != j)
+                            isDistinct = false;
+                    }
+                }
+
+                $("form").validate();
+
+
+                $('#Name').rules("add",
+                    {
+                        required: true,
+                        messages: {
+                            required: "Project name is required",
+                        }
+                    });
+                $('#Username').rules("add",
+                    {
+                        required: true,
+                        messages: {
+                            required: "User name is required",
+                        }
+                    });
+
+                var filledUrls = true;
+
+                for (var i = 0; i <= repoCount; i++) {
+                    var rep = $('input[name="name' + i + '"]');
+                    if (rep.val() == "") {
+                        filledUrls = false;
+                        $("#id" + i).text("Insert URL");
+                    }
+                }
+
+                if (!isDistinct) {
+                    $('.error_Row').empty().append('<span>You have 2 or more similar repositories</span>');
+                }
+
+
+
+
+               // var id = $("#Id").val();
+                //var name = $(".projectName").val();
+                //var dep = $(".departmentOption option:selected").val();
+                //var user = $(".user option:selected").val();
+                //var userName = $(".userName").val();
+                //var projectData = name + "&projectData[]=" + dep + "&projectData[]=" + user + "&projectData[]=" + userName;
+
+
+
+                var projectData = [];
+                projectData.push($(".projectName").val())
+                projectData.push($(".departmentOption option:selected").val())
+                projectData.push($(".user option:selected").val())
+                projectData.push($(".userName").val())
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    projectData.push(selectedIds[i] + "^" + insertedUrls[i]);
+                }
+                if ($("form").valid() && isDistinct && filledUrls) {
+                    $.ajax(
+                        {
+                            url: "@Url.Action("SubmitProject", "Project")",
+                            //url: "https://localhost:44367/api/Project/SubmitProject?projectData[]=" + projectData,
+                            //data: JSON.stringify(formDataRepository),
+                            data: JSON.stringify(projectData),
+                            type: "POST",
+                            contentType: 'application/json',
+                            dataType: "json",
+                            //contentType: false,
+                            //processData: false,
+                            success: function (data) {
+
+                                document.location.href = "/Project/Index";
+
+
+                            },
+
+                        })
+                }
+
+            })
+
+        })
+
+
+        $(document).on('click', '#removeButton', function (event) {
+
+            $(this).closest(".repoClass").remove();
+            $('.error_Row').empty();
+            repoCount--;
+        })
+
+    </script>
+}

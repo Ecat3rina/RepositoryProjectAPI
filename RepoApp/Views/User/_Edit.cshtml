@@ -1,0 +1,98 @@
+﻿@model RepoApp.BLL.Models.EditModels.UserEditModel
+
+@{
+    Layout = null;
+}
+
+
+<form novalidate id="userEditPost">
+    <div class="container">
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.FullName)
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.ChangeConnection)
+                @Html.CheckBoxFor(m => m.ChangeConnection)
+            </div>
+        </div>
+
+        @*<div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                <label>Connection</label>
+                @if (!Model.IsConnected)
+                {
+                    <span class="label label-danger">OFF</span>
+                }
+                else
+                {
+                    <span class="label label-success">ON</span>
+                }
+            </div>
+        </div>*@
+
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.IsChangePassword)
+                @Html.CheckBoxFor(m => m.IsChangePassword)
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @placeholder = "Insert password", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.ConfirmPassword)
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @placeholder = "Insert new password", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.IsChangeRoles)
+                @Html.CheckBoxFor(m => m.IsChangeRoles)
+                @Html.ListBoxFor(m => m.Roles, this.ViewBag.Roles as SelectList, new { @class = "selectpicker show-tick form-control" })
+                @Html.ValidationMessageFor(m => m.IsChangeRoles, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-warning" type="submit">Edit</button>
+    </div>
+</form>
+
+

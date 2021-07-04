@@ -1,0 +1,56 @@
+﻿@model RepoApp.BLL.Models.AddModels.UserAddModel
+
+@{
+    Layout = null;
+}
+
+<form novalidate id="userAddPost">
+    <div class="container">
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.FullName)
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+                @Html.LabelFor(m => m.Roles)
+                @Html.ListBoxFor(m => m.Roles, this.ViewBag.Roles as SelectList, new { @class = "selectpicker show-tick form-control" })
+                @Html.ValidationMessageFor(m => m.Roles, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="submit">Save</button>
+    </div>
+</form>
+
+
+
+
+

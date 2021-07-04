@@ -1,0 +1,668 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<h2>Users</h2>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 id="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+                <!-- Modal body -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<table id="myTable" class="table table-bordered table-striped">
+</table>
+
+@Html.ActionLink("Add user", "Add", "User", new { @class = "btn btn-primary userAdd" })
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var logout = $("a[href$='Account/LogOut']").text();
+            var loggedUsername = logout.replace('Exit ', '');
+
+
+            $.ajax(
+                {
+                    type: "Get",
+                    url: "@Url.Action("GetRole", "User", new { httproute = "ActionRoute" })",
+                    dataType: 'JSON',
+                    data: {
+                        name: loggedUsername,
+                    },
+                    success: function (response) {
+                        if (response == 'Admin') {
+                            $("#myTable").DataTable({
+                                autoWidth: false,
+                                serverSide: true,
+
+                                "columns": [
+                                    {
+                                        data: 'Id',
+                                        name: 'Id',
+                                        visible: false
+                                    },
+                                    {
+
+                                        data: 'UserName',
+                                        name: 'UserName',
+                                        title: 'Username',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'FullName',
+                                        name: 'FullName',
+                                        title: 'Full name',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'Email',
+                                        name: 'Email',
+                                        title: 'E-mail',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'IsConnected',
+                                        width: '10px',
+                                        title: 'Connection',
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            if (!data) return "<span class='label label-danger '>OFF</span>";
+                                            else return "<span class='label label-success'>ON</span>";
+                                        }
+                                    },
+
+                                    {
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetEdit","User")/" + row.Id + "' class='btn btn-warning userEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+
+                                        }
+                                    },
+                                    {
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetDetails", "User", new { httproute = "ActionRoute" })/" + row.Id + "' class='btn btn-info userInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                                        }
+                                    },
+                                    @*{
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("Delete","User")/" + row.Id + "' class='btn btn-danger userDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                                        }
+                                    }*@
+                                ],
+
+                                ajax: {
+                                    url: "@Url.Action("GetUsers", "User", new { httproute = "ActionRoute" })",
+                                    type: "Post"
+                                },
+                                initComplete: function () {
+                                    var input = $(".dataTables_filter input").unbind();
+                                    var inputVar = $(".dataTables_filter input");
+                                    $("#myTable_filter").append(inputVar);
+                                    $("#myTable_filter label").remove();
+                                    self = this.api(),
+                                        $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                            .text("Search")
+                                            .click(function () {
+                                                self.search(input.val()).draw();
+                                            })
+                                    $(".dataTables_filter").append($searchButton);
+                                }
+                            })
+                        }
+                         if (response == 'Operator') {
+
+                            $('.userAdd').hide();
+
+                            $("#myTable").DataTable({
+
+                                autoWidth: false,
+                                serverSide: true,
+
+                                "columns": [
+                                    {
+                                        data: 'Id',
+                                        name: 'Id',
+                                        visible: false
+                                    },
+                                    {
+
+                                        data: 'UserName',
+                                        name: 'UserName',
+                                        title: 'Username',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'FullName',
+                                        name: 'FullName',
+                                        title: 'Full name',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'Email',
+                                        name: 'Email',
+                                        title: 'E-mail',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'IsConnected',
+                                        width: '5%',
+                                        title: 'Connection',
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            if (!data) return "<span class='label label-danger '>OFF</span>";
+                                            else return "<span class='label label-success'>ON</span>";
+                                        }
+                                    },
+
+                                    {
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetEdit","User")/" + row.Id + "' class='btn btn-warning userEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+                                        }
+                                    },
+                                    {
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetDetails","User")/" + row.Id + "' class='btn btn-info userInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                                        }
+                                    },
+                                    @*{
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("Delete","User")/" + row.Id + "' class='btn btn-danger userDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                                        }
+                                    }*@
+                                ],
+
+                                 ajax: {
+                                    url: "@Url.Action("GetUsers", "User", new { httproute = "ActionRoute" })",
+                                    type: "Post"
+                                },
+
+                                initComplete: function () {
+                                    var input = $(".dataTables_filter input").unbind();
+                                    var inputVar = $(".dataTables_filter input");
+                                    $("#myTable_filter").append(inputVar);
+                                    $("#myTable_filter label").remove();
+                                    self = this.api(),
+                                        $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                            .text("Search")
+                                            .click(function () {
+                                                self.search(input.val()).draw();
+                                            })
+                                    $(".dataTables_filter").append($searchButton);
+                                }
+                            })
+                        }
+
+                        if (response == 'User') {
+
+                            $('.userAdd').hide();
+
+                            $("#myTable").DataTable({
+
+                                autoWidth: false,
+                                serverSide: true,
+
+                                "columns": [
+                                    {
+                                        data: 'Id',
+                                        name: 'Id',
+                                        visible: false
+                                    },
+                                    {
+
+                                        data: 'UserName',
+                                        name: 'UserName',
+                                        title: 'Username',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'FullName',
+                                        name: 'FullName',
+                                        title: 'Full name',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'Email',
+                                        name: 'Email',
+                                        title: 'E-mail',
+                                        "autoWidth": true
+                                    },
+                                    {
+                                        data: 'IsConnected',
+                                        width: '5%',
+                                        title: 'Connection',
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            if (!data) return "<span class='label label-danger '>OFF</span>";
+                                            else return "<span class='label label-success'>ON</span>";
+                                        }
+                                    },
+
+                                    @*{
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetEdit","User")/" + row.Id + "' class='btn btn-warning userEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+                                        }
+                                    },*@
+                                    {
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("GetDetails","User")/" + row.Id + "' class='btn btn-info userInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                                        }
+                                    },
+                                    @*{
+                                        data: null,
+                                        orderable: false,
+                                        className: 'text-center',
+                                        render: function (data, type, row) {
+                                            return "<a href='@Url.Action("Delete","User")/" + row.Id + "' class='btn btn-danger userDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                                        }
+                                    }*@
+                                ],
+
+                                 ajax: {
+                                    url: "@Url.Action("GetUsers", "User", new { httproute = "ActionRoute" })",
+                                    type: "Post"
+                                },
+                                initComplete: function () {
+                                    var input = $(".dataTables_filter input").unbind();
+                                    var inputVar = $(".dataTables_filter input");
+                                    $("#myTable_filter").append(inputVar);
+                                    $("#myTable_filter label").remove();
+                                    self = this.api(),
+                                        $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                            .text("Search")
+                                            .click(function () {
+                                                self.search(input.val()).draw();
+                                            })
+                                    $(".dataTables_filter").append($searchButton);
+                                }
+                            })
+                        }
+                    }
+                })
+
+
+
+            var validationResult = {
+                Valid: "Valid",
+                UnValid: "UnValid"
+            }
+
+            $(document).on('submit', '#userAddPost', function (event) {
+                event.preventDefault();
+
+                $('#userAddPost')
+                    .removeData("validator") /* added by the raw jquery.validate plugin */
+                    .removeData("unobtrusiveValidation");  /* added by the jquery unobtrusive plugin*/
+
+                $.validator.unobtrusive.parse('#userAddPost');
+
+                if ($("#userAddPost").valid()) {
+
+                    //var userObj =
+                    //{
+                    //    UserName: $("#UserName").val(),
+                    //    Password: $("#Password").val(),
+                    //    Email: $("#Email").val(),
+                    //    Fullname: $("#FullName").val(),
+                    //    Roles: $("#Roles").val()
+                    //};
+
+                    var userObj = $("form").serializeArray();
+
+                    var logout = $("a[href$='Account/LogOut']").text();
+                    var loggedUsername = logout.replace('Exit ', '');
+
+                    var data = new FormData();
+
+                    data.append("userData[]", $("#UserName").val())
+                    data.append("userData[]", $("#Password").val())
+                    data.append("userData[]", $("#Email").val())
+                    data.append("userData[]", $("#FullName").val())
+                    data.append("userData[]", $("#Roles").val())
+
+
+                    $.ajax(
+                        {
+                            url: "@Url.Action("Add", "User", new { httproute = "ActionRoute" })",
+                            data: userObj,
+                            method: "Post",
+                            dataType: 'json',
+                            success: function (response) {
+                               // if (response.viewPage) {
+                                  //if (response.validationResult === validationResult.Valid) {
+                                if (response.ExecutionStatus == 0) {
+                                        $("#myModal").modal("hide");
+                                        $('#myTable').DataTable().ajax.reload();
+                                    }
+
+                                // if (response.validationResult === validationResult.UnValid) {
+                                if (response.ExecutionStatus == 5) {
+
+                                        $(".modal-body").html(response.viewPage);
+                                        $('select').selectpicker();
+                                        $("#userAddPost").validate().showErrors({
+                                            "UserName": response.ValidationMessages.UserName,
+                                            "Email": response.ValidationMessages.Email
+                                        })
+
+                                    }
+
+                               // }
+                            }
+
+                        })
+                }
+            });
+
+
+            $(document).on('click', '.userAdd', function (event) {
+                event.preventDefault();
+                var myUrlAdd = this.pathname;
+
+                    $.ajax(
+                        {
+                            async: true,
+                            url: myUrlAdd,
+                            success: function (data) {
+                                $(".modal-body")[0].innerHTML = data;
+                                $("#modal-title").text("Add user");
+                                $('#myModal').modal();
+                                $('select').selectpicker();
+
+                            }
+                        })
+
+            })
+
+            $(document).on('click', '.userInfo', function (event) {
+                event.preventDefault();
+
+                var url = this.pathname;
+                var id = url.substring(url.lastIndexOf('/') + 1);
+
+                $.ajax(
+                    {
+                        async: true,
+                        method: "Get",
+                        url: "https://localhost:44367/api/User/GetDetails/" + id,
+                        success: function (data) {
+                            $.ajax({
+                                url: "@Url.Action("GetDetails", "User")",
+                                data: data,
+                                method: "Get",
+                                success: function (data) {
+                                    $(".modal-body")[0].innerHTML = data;
+                                    $("#modal-title").text("User details");
+                                    $('#myModal').modal();
+                                }
+                            })
+
+                        }
+                    })
+            });
+
+            $(document).on('click', '.userDelete', function (event) {
+                event.preventDefault();
+
+                var myUrlInfo = this.pathname;
+
+                $.ajax(
+                    {
+                        async: true,
+                        url: myUrlInfo,
+                        success: function (data) {
+                            $(".modal-body")[0].innerHTML = data;
+                            $("#modal-title").text("Delete user");
+                            $('#myModal').modal();
+                        }
+                    })
+            });
+
+
+            $(document).on('submit', '#userDeletePost', function (event) {
+                event.preventDefault();
+                $.ajax(
+                    {
+                        url: "/user/delete",
+                        data: {
+                            Id: $("#Id").val(),
+                        },
+                        method: "Post",
+                        success: function (response) {
+                            $("#myModal").modal("hide");
+                            $('#myTable').DataTable().ajax.reload();
+                        }
+                    })
+            });
+
+            $(document).on('click', '.userEdit', function (event) {
+                event.preventDefault();
+
+                var url = this.pathname;
+                var id = url.substring(url.lastIndexOf('/') + 1);
+                $.ajax(
+                    {
+                        async: true,
+                        method: "Get",
+                        url: "https://localhost:44367/api/User/GetEdit/"+id,
+
+                        success: function (data) {
+                            $.ajax({
+                                url: "@Url.Action("GetEdit", "User")",
+                                    data: data,
+                                    method: "Get",
+                                    success: function (data) {
+                                        $(".modal-body")[0].innerHTML = data;
+                                        $("#modal-title").text("Edit user");
+                                        $('#myModal').modal();
+                                        $('select').selectpicker();
+
+
+                                        if ($("#IsChangePassword").is(":checked")) {
+                                            $("#ConfirmPassword").prop("disabled", false);
+                                            $("#Password").prop("disabled", false);
+                                        }
+                                        else {
+                                            $("#ConfirmPassword").prop("disabled", true);
+                                            $("#Password").prop("disabled", true);
+                                        }
+
+                                        $("#IsChangePassword").on("change", function (e) {
+                                            if ($(this).is(":checked")) {
+                                                $("#ConfirmPassword").prop("disabled", false);
+                                                $("#Password").prop("disabled", false);
+                                            }
+                                            else {
+                                                $("#ConfirmPassword").prop("disabled", true);
+                                                $("#Password").prop("disabled", true);
+                                            }
+                                        })
+
+
+                                        $(".disable").css({ 'opacity': '1' });
+
+                                        if ($("#IsChangeRoles").is(':checked'))
+                                            $('#Roles').attr('disabled', false);
+                                        else {
+                                            $('#Roles').attr("disabled", true);
+                                        }
+
+
+
+                                        $('#IsChangeRoles').change(function () {
+                                            if ($(this).is(':checked'))
+                                                $('#Roles').attr('disabled', false);
+                                            else
+                                                $('#Roles').attr("disabled", true);
+                                        })
+                                    }
+
+                            })
+                        }
+                    })
+
+            });
+
+            $(document).on('submit', '#userEditPost', function (event) {
+                event.preventDefault();
+
+                $('#userEditPost')
+                    .removeData("validator") /* added by the raw jquery.validate plugin */
+                    .removeData("unobtrusiveValidation");  /* added by the jquery unobtrusive plugin*/
+
+                $.validator.unobtrusive.parse('#userEditPost');
+
+                if ($("#userEditPost").valid()) {
+
+                    var userObj = $("form").serializeArray();
+
+
+                    var logout = $("a[href$='Account/LogOut']").text();
+                    var loggedUsername = logout.replace('Exit ', '');
+
+
+                    var logout = $("a[href$='Account/LogOut']").text();
+                    var loggedUsername = logout.replace('Exit ', '');
+
+                    var data = new FormData();
+                    var password = false;
+                    var roles = false;
+                    var connection = false;
+
+                    if ($("#IsChangePassword").is(':checked'))
+                        password = true;
+                    if ($("#IsChangeRoles").is(':checked'))
+                        roles = true;
+                    if ($("#ChangeConnection").is(':checked'))
+                        connection = true;
+
+                    data.append("userData[]", loggedUsername)
+                    data.append("userData[]", $("#UserName").val())
+                    data.append("userData[]", $("#Password").val())
+                    data.append("userData[]", $("#Email").val())
+                    data.append("userData[]", $("#FullName").val())
+                    data.append("userData[]", $("#Roles").val())
+                    data.append("userData[]", $("#Id").val())
+                    data.append("userData[]", password)
+                    data.append("userData[]", roles)
+                    data.append("userData[]", $("#ConfirmPassword").val())
+                    data.append("userData[]", connection)
+
+
+                    $.ajax(
+                        {
+                            url: "@Url.Action("Edit", "User", new { httproute = "ActionRoute" })",
+                            data: userObj,
+                            method: "Post",
+
+                            success: function (response) {
+
+                                //if (response.viewPage) {
+
+                                    //if (response.validationResult === validationResult.Valid) {
+                                    if (response.ExecutionStatus == 0) {
+                                        $("#myModal").modal("hide");
+                                        $('#myTable').DataTable().ajax.reload();
+                                    }
+
+                                    //if (response.validationResult === validationResult.UnValid) {
+                                    if (response.ExecutionStatus == 5) {
+
+
+                                        $(".modal-body").html(response.viewPage);
+                                        $('select').selectpicker();
+                                        $("#userEditPost").validate().showErrors({
+                                            "UserName": response.ValidationMessages.UserName,
+                                            "Email": response.ValidationMessages.Email,
+                                            "ConfirmPassword": response.ValidationMessages.ConfirmPassword,
+                                            "IsChangeRoles": response.ValidationMessages.IsChangeRoles,
+                                            "Password": response.ValidationMessages.Password
+
+                                        })
+                                        if ($("#IsChangePassword").is(":checked")) {
+                                            $("#ConfirmPassword").prop("disabled", false);
+                                            $("#Password").prop("disabled", false);
+                                        }
+                                        else {
+                                            $("#ConfirmPassword").prop("disabled", true);
+                                            $("#Password").prop("disabled", true);
+                                        }
+
+                                        $("#IsChangePassword").on("change", function (e) {
+                                            if ($(this).is(":checked")) {
+                                                $("#ConfirmPassword").prop("disabled", false);
+                                                $("#Password").prop("disabled", false);
+                                            }
+                                            else {
+                                                $("#ConfirmPassword").prop("disabled", true);
+                                                $("#Password").prop("disabled", true);
+                                            }
+                                        })
+
+                                        if ($("#IsChangeRoles").is(':checked'))
+                                            $('#Roles').attr('disabled', false);
+
+                                        else
+                                            $('#Roles').attr("disabled", true);
+
+
+
+                                        $('#IsChangeRoles').change(function () {
+                                            if ($(this).is(':checked')) {
+                                                $('#Roles').attr('disabled', false);
+                                                $('.disabled').css('color', 'black');
+                                            }
+
+                                            else
+                                                $('#Roles').attr("disabled", true);
+                                        })
+
+
+                                    }
+                               // }
+
+
+                            }
+                        })
+                }
+            })
+        });
+
+    </script>
+}
+

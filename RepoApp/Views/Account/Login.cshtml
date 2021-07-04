@@ -1,0 +1,84 @@
+﻿@model RepoApp.BLL.Models.AuthenticationModels.LoginUserModel
+
+@{
+    ViewBag.Title = "Login";
+}
+<style>
+    body {
+        background-image: url("/Content/Images/Image.jpg");
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .form-group {
+        display: flex;
+    }
+
+    .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+    button {
+        width: 100%;
+        margin-top: 15px;
+    }
+    label {
+        margin-top:5px;
+    }
+</style>
+
+
+<div class="center well">
+    @*<div class='col-md-6 col-md-offset-3 well' style='margin-top: 80px'>*@
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+
+        <h2 class='text-center'>Application</h2>
+        <br />
+        @*<div class="form-group">*@
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="col-sm-9">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-success">
+                    Log in
+                    <span class="glyphicon glyphicon-log-in"></span>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.navbar-fixed-top').hide();
+        });
+
+    </script>
+}

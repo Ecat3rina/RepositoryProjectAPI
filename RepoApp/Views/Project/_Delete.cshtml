@@ -1,0 +1,80 @@
+﻿
+@model RepoApp.BLL.Models.DetailModels.ProjectDetailsModel
+
+@{
+
+}
+
+<form novalidate id="projectDeletePost">
+    @Html.HiddenFor(x => x.Id)
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-6">
+                <span style="font-weight:bold">Do you want to delete this project?</span>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Id)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Id</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Name)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Name</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Department)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Department</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.User)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.User</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Username)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Username</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Repositories)
+            </div>
+            <div class="col-sm-9">
+
+                @foreach (var repo in Model.Repositories)
+                {
+                    <span>@repo</span>
+                    <br />
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" type="submit">Delete</button>
+    </div>
+    </form>
+
+

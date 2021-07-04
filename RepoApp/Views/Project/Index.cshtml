@@ -1,0 +1,425 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+<h2>Projects</h2>
+
+<div class="modal fade" id="projectModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 id="modal-title"></h3>
+            </div>
+            <div class="body">
+                <!-- Modal body -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<table id="table" class="table table-bordered table-striped">
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var logout = $("a[href$='Account/LogOut']").text();
+            var loggedUsername = logout.replace('Exit ', '');
+            $.ajax(
+                {
+                    type: "Get",
+                    url: "@Url.Action("GetRole", "Project")",
+                    dataType: 'JSON',
+                    data: {
+                        name: loggedUsername,
+                    },
+
+                    success: function (response) {
+                        if (response == '"Admin"') {
+
+                $("#table").DataTable({
+                    autoWidth: false,
+                    serverSide: true,
+
+                    dom:
+                        "<'row'<'col-sm-3'l><'col-sm-9'fB>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    buttons: [
+                        {
+                            text: 'Add',
+                            action: function (e, dt, node, config) {
+                                window.location.href = "https://localhost:44367/Project/Add";
+                            }
+                        }
+                    ],
+                    language: { search: "" },
+
+
+                    "columns": [
+                        {
+                            data: 'Id',
+                            name: 'Id',
+                            visible: false
+                        },
+                        {
+
+                            data: 'Name',
+                            name: 'Name',
+                            title: 'Project name',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Department',
+                            name: 'Department',
+                            title: 'Department',
+                            "autoWidth": true
+
+                        },
+                        {
+                            data: 'User',
+                            name: 'User',
+                            title: 'Cedacri International responsible user',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Username',
+                            name: 'Username',
+                            title: 'Cedacri Italia responsible user name',
+                        },
+
+                        {
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetEdit","Project")/" + row.Id + "'class='btn btn-warning projectEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+                            }
+                        },
+                        {
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetDetails","Project")/" + row.Id + "'class='btn btn-info projectInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                            }
+                        },
+                        @*{
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("Delete","Project")/" + row.Id + "'class='btn btn-danger projectDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                            }
+                        }*@
+                    ],
+
+
+                    ajax: {
+                        url: "@Url.Action("GetProjects", "Project", new { httproute = "ActionRoute" })",
+                        type: "Post"
+                    },
+
+
+
+                    initComplete: function () {
+                        var input = $(".dataTables_filter input").unbind();
+                        var inputVar = $(".dataTables_filter input");
+                        $("#myTable_filter").append(inputVar);
+                        $("#myTable_filter label").remove();
+                        self = this.api(),
+                            $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                .text("Search")
+                                .click(function () {
+                                    self.search(input.val()).draw();
+                                })
+                        $(".dataTables_filter").append($searchButton);
+                    },
+                })
+            }
+
+                        if (response == '"Operator"') {
+
+                dataTable = $("#table").DataTable({
+                    autoWidth: false,
+                    serverSide: true,
+
+                    //dom:
+                    //    "<'row'<'col-sm-3'l><'col-sm-9'fB>>" +
+                    //    "<'row'<'col-sm-12'tr>>" +
+                    //    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    //buttons: [
+                    //    {
+                    //        text: 'Add',
+                    //        action: function (e, dt, node, config) {
+                    //            window.location.href = "https://localhost:44367/Project/Add";
+                    //            // console.log(getApplicationRoot());
+                    //        }
+                    //    }
+                    //],
+                    language: { search: "" },
+
+
+                    "columns": [
+                        {
+                            data: 'Id',
+                            name: 'Id',
+                            visible: false
+                        },
+                        {
+
+                            data: 'Name',
+                            name: 'Name',
+                            title: 'Project name',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Department',
+                            name: 'Department',
+                            title: 'Department',
+                            "autoWidth": true
+
+                        },
+                        {
+                            data: 'User',
+                            name: 'User',
+                            title: 'Cedacri International responsible user',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Username',
+                            name: 'Username',
+                            title: 'Cedacri Italia responsible user name',
+                        },
+
+                        {
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetEdit","Project")/" + row.Id + "'class='btn btn-warning projectEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+                            }
+                        },
+                        {
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetDetails","Project")/" + row.Id + "'class='btn btn-info projectInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                            }
+                        },
+                        @*{
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("Delete","Project")/" + row.Id + "'class='btn btn-danger projectDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                            }
+                        }*@
+                    ],
+
+
+                    ajax: {
+                        url: "@Url.Action("GetProjects", "Project", new { httproute = "ActionRoute" })",
+                        type: "Post"
+                    },
+
+
+
+                    initComplete: function () {
+                        var input = $(".dataTables_filter input").unbind();
+                        var inputVar = $(".dataTables_filter input");
+                        $("#myTable_filter").append(inputVar);
+                        $("#myTable_filter label").remove();
+                        self = this.api(),
+                            $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                .text("Search")
+                                .click(function () {
+                                    self.search(input.val()).draw();
+                                })
+                        $(".dataTables_filter").append($searchButton);
+                    },
+                })
+            }
+
+
+                        if (response == '"User"') {
+
+                dataTable = $("#table").DataTable({
+                    autoWidth: false,
+                    serverSide: true,
+
+                    //dom:
+                    //    "<'row'<'col-sm-3'l><'col-sm-9'fB>>" +
+                    //    "<'row'<'col-sm-12'tr>>" +
+                    //    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    //buttons: [
+                    //    {
+                    //        text: 'Add',
+                    //        action: function (e, dt, node, config) {
+                    //            window.location.href = "https://localhost:44367/Project/Add";
+                    //            // console.log(getApplicationRoot());
+                    //        }
+                    //    }
+                    //],
+                    language: { search: "" },
+
+
+                    "columns": [
+                        {
+                            data: 'Id',
+                            name: 'Id',
+                            visible: false
+                        },
+                        {
+
+                            data: 'Name',
+                            name: 'Name',
+                            title: 'Project name',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Department',
+                            name: 'Department',
+                            title: 'Department',
+                            "autoWidth": true
+
+                        },
+                        {
+                            data: 'User',
+                            name: 'User',
+                            title: 'Cedacri International responsible user',
+                            "autoWidth": true
+                        },
+                        {
+                            data: 'Username',
+                            name: 'Username',
+                            title: 'Cedacri Italia responsible user name',
+                        },
+
+                        @*{
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetEdit","Project")/" + row.Id + "'class='btn btn-warning projectEdit' title='Edit'><span class='glyphicon glyphicon-pencil'></span></a>";
+                            }
+                        },*@
+                        {
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("GetDetails","Project")/" + row.Id + "'class='btn btn-info projectInfo' title='Details'><span class='glyphicon glyphicon-info-sign'></span></a>";
+                            }
+                        },
+                        @*{
+                            data: null,
+                            orderable: false,
+                            className: 'text-center',
+                            render: function (data, type, row) {
+                                return "<a href='@Url.Action("Delete","Project")/" + row.Id + "'class='btn btn-danger projectDelete' title='Delete'><span class='glyphicon glyphicon-remove'></span></a>";
+                            }
+                        }*@
+                    ],
+
+
+                    ajax: {
+                        url: "@Url.Action("GetProjects", "Project", new { httproute = "ActionRoute" })",
+                        type: "Post"
+                    },
+
+
+
+                    initComplete: function () {
+                        var input = $(".dataTables_filter input").unbind();
+                        var inputVar = $(".dataTables_filter input");
+                        $("#myTable_filter").append(inputVar);
+                        $("#myTable_filter label").remove();
+                        self = this.api(),
+                            $searchButton = $("<button class='btn btn-sm btn-default'>")
+                                .text("Search")
+                                .click(function () {
+                                    self.search(input.val()).draw();
+                                })
+                        $(".dataTables_filter").append($searchButton);
+                    },
+                })
+            }
+
+                    }
+                })
+
+            $(document).on('click', '.projectInfo', function (event) {
+                event.preventDefault();
+
+                var myUrlInfo = this.pathname;
+
+                $.ajax(
+                    {
+                        async: true,
+                        url: myUrlInfo,
+                        success: function (data) {
+                            $(".body")[0].innerHTML = data;
+                            $("#modal-title").text("Project details");
+                            $('#projectModal').modal();
+
+                        }
+                    })
+            });
+
+
+
+            $(document).on('click', '.projectDelete', function (event) {
+                event.preventDefault();
+
+                var myUrlInfo = this.pathname;
+
+                $.ajax(
+                    {
+                        async: true,
+                        url: myUrlInfo,
+                        success: function (data) {
+                            $(".body")[0].innerHTML = data;
+                            $("#modal-title").text("Delete project");
+                            $('#projectModal').modal();
+                        }
+                    })
+            });
+
+
+            $(document).on('submit', '#projectDeletePost', function (event) {
+                event.preventDefault();
+                $.ajax(
+                    {
+                        url: "/project/delete",
+                        data: {
+                            Id: $("#Id").val(),
+                        },
+                        method: "Post",
+                        success: function (response) {
+                            $("#projectModal").modal("hide");
+                            $('#table').DataTable().ajax.reload();
+                        }
+                    })
+            });
+
+            $(document).on('click', '.projectEdit', function (event) {
+                event.preventDefault();
+                var myUrlEdit = this.pathname;
+                $.ajax(
+                    {
+                        success: function (data) {
+                            window.location.href = myUrlEdit;
+
+                        }
+                    })
+                })
+            });
+
+    </script>
+}

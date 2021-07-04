@@ -1,0 +1,72 @@
+﻿
+@model RepoApp.BLL.Models.DetailModels.ProjectDetailsModel
+
+@{
+
+}
+
+
+<form>
+    <br />
+    <div class="container">
+        @*<div class="row">
+                <div class="col-sm-3">
+                    @Html.LabelFor(m => m.Id)
+                </div>
+                <div class="col-sm-9">
+                    <span>@Model.Id</span>
+                </div>
+            </div>*@
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Name)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Name</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Department)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Department</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.User)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.User</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Username)
+            </div>
+            <div class="col-sm-9">
+                <span>@Model.Username</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.LabelFor(m => m.Repositories)
+            </div>
+            <div class="col-sm-9">
+
+                @foreach (var repo in Model.Repositories)
+                {
+                    <span>@repo</span>
+                    <br />
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="modal-footer"></div>
+</form>
+
+

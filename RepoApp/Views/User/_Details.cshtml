@@ -1,0 +1,86 @@
+﻿@model RepoApp.BLL.Models.DetailModels.UserDetailsModel
+
+@{
+    Layout = null;
+
+}
+
+
+<form>
+    <br />
+    <div class="container">
+        @*<div class="row">
+                <div class="col-sm-2">
+                    @Html.LabelFor(m=>m.Id)
+                </div>
+                <div class="col-sm-6">
+                    <span>@Model.Id</span>
+                </div>
+            </div>*@
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="col-sm-6">
+                <span>@Model.UserName</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.FullName)
+            </div>
+            <div class="col-sm-6">
+                <span>@Model.FullName</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.Email)
+            </div>
+            <div class="col-sm-6">
+                <span>@Model.Email</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="col-sm-6">
+                <span>@Model.Password</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.IsConnected)
+            </div>
+            <div class="col-sm-6">
+                @if (!Model.IsConnected)
+                {
+                    <span class="label label-danger">OFF</span>
+                }
+                else
+                {
+                    <span class="label label-success">ON</span>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                @Html.LabelFor(m => m.Roles)
+            </div>
+            <div class="col-sm-6">
+
+                @foreach (var role in Model.Roles)
+                {
+                    <span>@role</span>
+                    <br />
+                }
+            </div>
+        </div>
+    </div>
+    <br />
+
+    <div class="modal-footer"></div>
+</form>
+
+

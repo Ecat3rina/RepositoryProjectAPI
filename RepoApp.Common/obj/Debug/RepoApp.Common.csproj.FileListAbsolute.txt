@@ -1,0 +1,6 @@
+C:\Users\crm0261\source\repos\RepoApp\RepoApp.Common\bin\Debug\RepoApp.Common.dll
+C:\Users\crm0261\source\repos\RepoApp\RepoApp.Common\bin\Debug\RepoApp.Common.pdb
+C:\Users\crm0261\source\repos\RepoApp\RepoApp.Common\obj\Debug\RepoApp.Common.csproj.CoreCompileInputs.cache
+C:\Users\crm0261\source\repos\RepoApp\RepoApp.Common\obj\Debug\RepoApp.Common.dll
+C:\Users\crm0261\source\repos\RepoApp\RepoApp.Common\obj\Debug\RepoApp.Common.pdb
+C:\Users\crm0261\source\repos\RepoAPP\RepoApp.Common\obj\Debug\RepoApp.Common.csproj.AssemblyReference.cache

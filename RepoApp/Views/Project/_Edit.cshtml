@@ -1,0 +1,294 @@
+﻿@model RepoApp.BLL.Models.ProjectViewModelEdit
+
+@{
+    ViewBag.Title = "null";
+
+}
+
+<h2>Edit project</h2>
+
+<form novalidate id="projectEditForm">
+    <hr />
+    @Html.HiddenFor(x => x.Id)
+
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control projectName" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-sm-6">
+            @Html.LabelFor(m => m.DepartmentId)
+            @Html.DropDownListFor(m => m.DepartmentId, (IEnumerable<SelectListItem>)ViewBag.Departments, new { @class = "form-control form-control-sm selectpicker selectpicker-border show-tick departmentOption" })
+            @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-6">
+            @Html.LabelFor(m => m.UserId)
+            @Html.DropDownListFor(m => m.UserId, (IEnumerable<SelectListItem>)ViewBag.Users, new { @class = "form-control form-control-sm selectpicker selectpicker-border show-tick user" })
+            @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-sm-6 form-group">
+            @Html.LabelFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control userName" })
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <hr />
+</form>
+<div class="repoSpace"></div>
+
+<div class="row">
+    <div class="col text-center error_Row">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        <button class="btn btn-success center" type="button" id="addRepo"><span class="glyphicon glyphicon-plus"></span>Add repository</button>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col text-center">
+        <button class="btn btn-primary center" type="button" id="editProject">Edit</button>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+
+
+            var id = $("#Id").val();
+            var lastRepoId;
+
+            $.ajax(
+                {
+                    url: "@Url.Action("GetAllUserRepositories", "Project", new { httproute = "ActionRoute" })",
+                    type: "Get",
+                    dataType: 'JSON',
+                    data: {
+                        Id: id,
+                    },
+                    //contentType: false,
+                    //processData: false,
+                    success: function (response) {
+                        $(".repoSpace").append(response);
+                        $('.selectpicker').selectpicker();
+                        lastRepoId = $('.spanClass').last().attr('id');
+                    },
+                })
+
+            //$('[data-id="Departments"]').prop('title','new')
+            //$('.departmentOption').selectpicker('refresh');
+            // $('.departmentOption').val('value1').selectpicker('render');
+            //debugger;
+
+           // var firstName = $("#Name").val();
+
+            $("#addRepo").click(function () {
+                var repoCount = $('.spanClass').last().attr('id');
+                $('.error_Row').empty();
+                if (typeof repoCount == 'undefined')
+                    repoCount = -1;
+                repoCount++;
+                //$('.url').last().attr('name', 'name' + repoCount);
+                //$('.spanClass').last().attr('id', repoCount);
+
+
+                //var info = new FormData();
+                //info.append("info[]", $("#Id").val())
+                //info.append("info[]", repoCount)
+                // repoCount++;
+
+                var count = [];
+                count.push(repoCount);
+                 //count.append("id", repoCount);
+                $.ajax(
+                    {
+                        //url: "@Url.Action("AddRepositoryForEdit", "Project", new { httproute = "ActionRoute" })",
+                        url: "https://localhost:44367/api/project/AddRepositoryForEdit/"+count,
+                       // data: JSON.stringify(count),
+                        type: "GET",
+                        contentType: 'application/json',
+                        dataType: "json",
+                        success: function (response) {
+                            $(".repoSpace").append(response);
+                            $('.selectpicker').selectpicker();
+                        },
+
+                    })
+            })
+
+            $("#editProject").click(function (e) {
+
+                var formDataRepository = new FormData();
+                var selectedIds = [];
+                var insertedUrls = [];
+
+                $(".repository-selectpicker option:selected").each(function (index) {
+                    selectedIds.push($(this).attr("id"));
+
+                })
+
+                $(".url").each(function (index) {
+                    insertedUrls.push($(this).val());
+                })
+                var logout = $("a[href$='Account/LogOut']").text();
+                var loggedUsername = logout.replace('Exit ', '');
+                formDataRepository.append("projectData[]", $("#Id").val())
+                formDataRepository.append("projectData[]", $(".projectName").val())
+                formDataRepository.append("projectData[]", $(".departmentOption option:selected").val())
+                formDataRepository.append("projectData[]", $(".user option:selected").val())
+                formDataRepository.append("projectData[]", $(".userName").val())
+
+
+                var repos = [];
+                var isDistinct = true;
+
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    formDataRepository.append("projectData[]", selectedIds[i] + "^" + insertedUrls[i] + "^" + i);
+                    repos.push(selectedIds[i] + "^" + insertedUrls[i]);
+                }
+
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    for (var j = 0; j < insertedUrls.length; j++) {
+                        if (repos[i] == repos[j] && i != j)
+                            isDistinct = false;
+                    }
+                }
+
+                $("form").validate();
+
+
+                $('#Name').rules("add",
+                    {
+                        required: true,
+                        messages: {
+                            required: "Project name is required",
+                        }
+                    });
+                $('#Username').rules("add",
+                    {
+                        required: true,
+                        messages: {
+                            required: "User name is required",
+                        }
+                    });
+
+                var filledUrls = true;
+
+                var repoCount = $('.spanClass').last().attr('id');
+
+                for (var i = 0; i <= repoCount; i++) {
+                    var rep = $('input[name="name' + i + '"]');
+                    if (rep.val() == "") {
+                        filledUrls = false;
+                        $("#" + i).text("Insert URL");
+                    }
+
+                }
+
+                if (!isDistinct) {
+                    $('.error_Row').empty().append('<span>You have 2 or more similar repositories</span>');
+                }
+
+
+                var projectData = [];
+                projectData.push($("#Id").val())
+                projectData.push($(".projectName").val())
+                projectData.push($(".departmentOption option:selected").val())
+                projectData.push($(".user option:selected").val())
+                projectData.push($(".userName").val())
+                for (var i = 0; i < insertedUrls.length; i++) {
+                    projectData.push(selectedIds[i] + "^" + insertedUrls[i]+"^"+i);
+                }
+
+                if ($("form").valid() && isDistinct && filledUrls) {
+                    $.ajax(
+                        {
+                            url: "@Url.Action("Edit", "Project")",
+                            type: "POST",
+                            data: formDataRepository,
+                            contentType: false,
+                            processData: false,
+                            success: function (data) {
+
+                                document.location.href = "/Project/Index";
+
+                            },
+
+                        })
+                }
+            })
+
+
+
+
+
+            $(document).on('click', '.remove', function (event) {
+
+
+                $('.error_Row').empty();
+
+                var url = $('input[name="name' + $(this).attr('id') + '"]').val();
+                var id = $("#select" + $(this).attr('id')).val()
+                var info = new FormData();
+
+                info.append("info[]", url)
+                info.append("info[]", id)
+
+
+                var repoData = [url,id];
+
+
+
+
+                var lastIdOfEdit = lastRepoId;
+                var clickedButtonId = $(this).attr('id')
+
+                if (typeof lastIdOfEdit == 'undefined') {
+                    $(this).closest(".repoClass").remove();
+                    $('.error_Row').empty();
+                }
+                else {
+                    if (clickedButtonId > lastIdOfEdit) {
+
+                        $(this).closest(".repoClass").remove();
+                        $('.error_Row').empty();
+                    }
+                    else {
+                        $('.error_Row').empty();
+                        $(this).closest(".repoClass").remove();
+
+                        $.ajax(
+                            {
+                                url: "@Url.Action("DeleteRepository", "Project")",
+
+                                data: JSON.stringify(repoData),
+                                type: "POST",
+                                contentType: 'application/json',
+                                dataType: "json",
+                                success: function (data) {
+
+                                },
+
+                            })
+
+                    }
+                }
+            })
+        })
+
+    </script>
+}
+
+
+
+
+
+
